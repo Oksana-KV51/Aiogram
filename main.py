@@ -1,13 +1,40 @@
+
+import logging
+import aiohttp
 import asyncio
-from aiogram import Bot, Dispatcher
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
-from config import TOKEN
+from config import TOKEN, WEATHER_API_KEY
 from aiogram import Bot, Dispatcher, F
 import random
 
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
+
+CITY_NAME = 'Moscow'  # Название города для прогноза погоды
+
+# Функция для получения прогноза погоды
+async def get_weather(city_name):
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={WEATHER_API_KEY}&units=metric&lang=ru'
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            data = await response.json()
+            if response.status == 200:
+                weather = data['weather'][0]['description']
+                temp = data['main']['temp']
+                return f'Погода в городе {city_name}: {weather}, температура: {temp}°C'
+            else:
+                return 'Не удалось получить прогноз погоды. Проверьте название города.'
+
+
+# Обработчик команды /weather
+@dp.message(Command('weather'))
+async def weather(message: Message):
+    weather_report = await get_weather(CITY_NAME)
+    await message.answer(weather_report)
 
 @dp.message(F. text == "что такое ИИ?")
 async def aitext(message: Message):
