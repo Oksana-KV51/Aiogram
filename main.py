@@ -39,7 +39,12 @@ async def get_weather(city_name):
 # Обработчик команды /weather
 @dp.message(Command('weather'))
 async def weather(message: Message):
-    weather_report = await get_weather(CITY_NAME)
+    await message.answer("Введите название города:")
+
+@dp.message()
+async def get_city_name(message: Message):
+    city_name = message.text
+    weather_report = await get_weather(city_name)
     await message.answer(weather_report)
 
 #отправка видео
