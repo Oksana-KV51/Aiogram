@@ -22,7 +22,7 @@ async def news(callback: CallbackQuery):
 #Inline-кнопки
 @dp.message(CommandStart())
 async def start(message: Message):
-   await message.answer(f'Приветики, {message.from_user.first_name}', reply_markup=kb.inline_keyboard_test) #kb.inline_keyboard_test   await kb.test_keyboard()  kb.main
+   await message.answer(f'Приветики, {message.from_user.first_name}', reply_markup=kb.main) #kb.inline_keyboard_test   await kb.test_keyboard()  kb.main
 
 
 #Reply-кнопки
